@@ -64,44 +64,46 @@ const timestamp = function () {
 };
 timestamp.toString = () => timeStrGet(new Date());
 
-export const loggerCreate = nameSpace => {
-    const nsl =  {
-        handlers: {},
-    };
-    lodash.each(levels, (levelInfo, levelName) => {
-        const {handlers} = nsl;
-        Object.defineProperty(nsl, levelName, {
-            get() {
-                if (!nsl.handlers[levelName]) {
-                    if (!nsl.instance) {
-                        nsl.instance = debug(nameSpace);
-                        // console.log(`lazyInit namespace ${nameSpace} useColors ${nsl.instance.useColors}`);
+export const logger = {
+    create(nameSpace) {
+        const nsl = {
+            handlers: {},
+        };
+        lodash.each(levels, (levelInfo, levelName) => {
+            const {handlers} = nsl;
+            Object.defineProperty(nsl, levelName, {
+                get() {
+                    if (!nsl.handlers[levelName]) {
+                        if (!nsl.instance) {
+                            nsl.instance = debug(nameSpace);
+                            // console.log(`lazyInit namespace ${nameSpace} useColors ${nsl.instance.useColors}`);
+                        }
+                        // console.log(`lazy init logger nameSpace ${nameSpace}:${levelInfo.suffix}`);
+                        const handler = nsl.instance.extend(levelInfo.suffix);
+                        // devtools timestamps can be enabled in settings
+                        handler.log = global.window ?
+                            console.log.bind(console) :
+                            console.log.bind(console, '%s', timestamp);
+                        const colorKey = global.window ? 'rgb' : 'terminal';
+                        handler.color = levelInfo.color[colorKey];
+                        handler.useColors = true;
+                        handlers[levelName] = handler;
                     }
-                    // console.log(`lazy init logger nameSpace ${nameSpace}:${levelInfo.suffix}`);
-                    const handler = nsl.instance.extend(levelInfo.suffix);
-                    // devtools timestamps can be enabled in settings
-                    handler.log = global.window ?
-                        console.log.bind(console) :
-                        console.log.bind(console, '%s', timestamp);
-                    const colorKey = global.window ? 'rgb' : 'terminal';
-                    handler.color = levelInfo.color[colorKey];
-                    handler.useColors = true;
-                    handlers[levelName] = handler;
-                }
-                return handlers[levelName];
-            },
+                    return handlers[levelName];
+                },
+            });
         });
-    });
-    return nsl;
+        return nsl;
+    },
+    init(namespacesList) {
+        const namespaces = namespacesList.join(',');
+        // console.log('logged namespaces:', namespaces);
+        debug.enable(namespaces);
+        // {
+        //     const testLogger = logger.create('test-logger');
+        //     ['cfg', 'dbg', 'log', 'info', 'warn', 'error',]
+        //         .forEach(level => testLogger[level](`test level ${level} message`));
+        // }
+    },
 };
 
-export const loggerInit = namespacesList => {
-    const namespaces = namespacesList.join(',');
-    // console.log('logged namespaces:', namespaces);
-    debug.enable(namespaces);
-    // {
-    //     const testLogger = loggerCreate('test-logger');
-    //     ['cfg', 'dbg', 'log', 'info', 'warn', 'error',]
-    //         .forEach(level => testLogger[level](`test level ${level} message`));
-    // }
-};
