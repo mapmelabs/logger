@@ -58,7 +58,13 @@ const levels = {
 
 const timeStrGet = date => {
     const msStr = date.getMilliseconds().toString().padStart(3, '0');
-    return `${date.toLocaleTimeString('it-US')}.${msStr}`;
+    const dateTimeStr = date.toLocaleTimeString('en-GB', {
+        timeZone: 'UTC',
+        year: "2-digit",
+        month: '2-digit',
+        day: '2-digit',
+    });
+    return `${dateTimeStr}.${msStr}`;
 };
 const timestamp = function () {
 };
