@@ -1,3 +1,4 @@
+"use strict";
 import lodash from 'lodash';
 
 import debug from 'debug';
