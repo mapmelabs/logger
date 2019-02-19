@@ -64,6 +64,7 @@ const timeStrGet = date => {
         year: "2-digit",
         month: '2-digit',
         day: '2-digit',
+        hour12: false,
     });
     return `${dateTimeStr}.${msStr}`;
 };
