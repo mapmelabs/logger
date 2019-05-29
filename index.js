@@ -1,7 +1,7 @@
-"use strict";
-import lodash from 'lodash';
+'use strict'
+import lodash from 'lodash'
 
-import debug from 'debug';
+import debug from 'debug'
 
 const colors = {
     red: {
@@ -14,7 +14,7 @@ const colors = {
     },
     yellow: {
         terminal: 3,
-        rgb: '#fcae05'
+        rgb: '#fcae05',
     },
     magenta: {
         terminal: 4,
@@ -28,90 +28,91 @@ const colors = {
         terminal: 7,
         rgb: '#777777',
     },
-};
+}
 
 const levels = {
     cfg: {
         color: colors.blue,
-        suffix: 'CFG'
+        suffix: 'CFG',
     },
     dbg: {
         color: colors.magenta,
-        suffix: 'DBG'
+        suffix: 'DBG',
     },
     log: {
         color: colors.gray,
-        suffix: 'LOG'
+        suffix: 'LOG',
     },
     info: {
         color: colors.green,
-        suffix: 'INF'
+        suffix: 'INF',
     },
     warn: {
         color: colors.yellow,
-        suffix: 'WRN'
+        suffix: 'WRN',
     },
     error: {
         color: colors.red,
-        suffix: 'ERR'
+        suffix: 'ERR',
     },
-};
+}
 
 const timeStrGet = date => {
-    const msStr = date.getMilliseconds().toString().padStart(3, '0');
+    const msStr = date
+        .getMilliseconds()
+        .toString()
+        .padStart(3, '0')
     const dateTimeStr = date.toLocaleTimeString('en-GB', {
         timeZone: 'UTC',
-        year: "2-digit",
+        year: '2-digit',
         month: '2-digit',
         day: '2-digit',
         hour12: false,
-    });
-    return `${dateTimeStr}.${msStr}`;
-};
-const timestamp = function () {
-};
-timestamp.toString = () => timeStrGet(new Date());
+    })
+    return `${dateTimeStr}.${msStr}`
+}
+const timestamp = function() {}
+timestamp.toString = () => timeStrGet(new Date())
 
 export const logger = {
     create(nameSpace) {
         const nsl = {
             handlers: {},
-        };
+        }
         lodash.each(levels, (levelInfo, levelName) => {
-            const {handlers} = nsl;
+            const {handlers} = nsl
             Object.defineProperty(nsl, levelName, {
                 get() {
                     if (!nsl.handlers[levelName]) {
                         if (!nsl.instance) {
-                            nsl.instance = debug(nameSpace);
+                            nsl.instance = debug(nameSpace)
                             // console.log(`lazyInit namespace ${nameSpace} useColors ${nsl.instance.useColors}`);
                         }
                         // console.log(`lazy init logger nameSpace ${nameSpace}:${levelInfo.suffix}`);
-                        const handler = nsl.instance.extend(levelInfo.suffix);
+                        const handler = nsl.instance.extend(levelInfo.suffix)
                         // devtools timestamps can be enabled in settings
-                        handler.log = global.window ?
-                            console.log.bind(console) :
-                            console.log.bind(console, '%s', timestamp);
-                        const colorKey = global.window ? 'rgb' : 'terminal';
-                        handler.color = levelInfo.color[colorKey];
-                        handler.useColors = true;
-                        handlers[levelName] = handler;
+                        handler.log = global.window
+                            ? console.log.bind(console)
+                            : console.log.bind(console, '%s', timestamp)
+                        const colorKey = global.window ? 'rgb' : 'terminal'
+                        handler.color = levelInfo.color[colorKey]
+                        handler.useColors = true
+                        handlers[levelName] = handler
                     }
-                    return handlers[levelName];
+                    return handlers[levelName]
                 },
-            });
-        });
-        return nsl;
+            })
+        })
+        return nsl
     },
     init(namespacesList) {
-        const namespaces = namespacesList.join(',');
+        const namespaces = namespacesList.join(',')
         // console.log('logged namespaces:', namespaces);
-        debug.enable(namespaces);
+        debug.enable(namespaces)
         // {
         //     const testLogger = logger.create('test-logger');
         //     ['cfg', 'dbg', 'log', 'info', 'warn', 'error',]
         //         .forEach(level => testLogger[level](`test level ${level} message`));
         // }
     },
-};
-
+}
