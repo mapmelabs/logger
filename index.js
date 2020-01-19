@@ -1,6 +1,4 @@
 'use strict'
-import lodash from 'lodash'
-
 import debug from 'debug'
 
 const colors = {
@@ -79,7 +77,7 @@ export const logger = {
         const nsl = {
             handlers: {},
         }
-        lodash.each(levels, (levelInfo, levelName) => {
+        for (let [levelName, levelInfo] of Object.entries(levels)) {
             const {handlers} = nsl
             Object.defineProperty(nsl, levelName, {
                 get() {
@@ -102,7 +100,7 @@ export const logger = {
                     return handlers[levelName]
                 },
             })
-        })
+        }
         return nsl
     },
     init(namespacesList) {
