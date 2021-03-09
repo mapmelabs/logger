@@ -56,10 +56,7 @@ const levels = {
 }
 
 const timeStrGet = date => {
-    const msStr = date
-        .getMilliseconds()
-        .toString()
-        .padStart(3, '0')
+    const msStr = date.getMilliseconds().toString().padStart(3, '0')
     const dateTimeStr = date.toLocaleTimeString('en-GB', {
         timeZone: 'UTC',
         year: '2-digit',
@@ -69,7 +66,7 @@ const timeStrGet = date => {
     })
     return `${dateTimeStr}.${msStr}`
 }
-const timestamp = function() {}
+const timestamp = function () {}
 timestamp.toString = () => timeStrGet(new Date())
 
 export const logger = {
@@ -77,7 +74,7 @@ export const logger = {
         const nsl = {
             handlers: {},
         }
-        for (let [levelName, levelInfo] of Object.entries(levels)) {
+        for (const [levelName, levelInfo] of Object.entries(levels)) {
             const {handlers} = nsl
             Object.defineProperty(nsl, levelName, {
                 get() {
