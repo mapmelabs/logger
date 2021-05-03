@@ -85,10 +85,8 @@ export const logger = {
                         // console.log(`lazy init logger nameSpace ${nameSpace}:${levelInfo.suffix}`);
                         const handler = nsl.instance.extend(levelInfo.suffix)
                         // devtools timestamps can be enabled in settings
-                        handler.log = global.window
-                            ? console.log.bind(console)
-                            : console.log.bind(console, '%s', timestamp)
-                        const colorKey = global.window ? 'rgb' : 'terminal'
+                        handler.log = window ? console.log.bind(console) : console.log.bind(console, '%s', timestamp)
+                        const colorKey = window ? 'rgb' : 'terminal'
                         handler.color = levelInfo.color[colorKey]
                         handler.useColors = true
                         handlers[levelName] = handler
